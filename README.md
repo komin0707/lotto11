@@ -36,3 +36,16 @@ git push -u origin main
   - `TOSS_CLIENT_KEY`
   - `TOSS_SECRET_KEY`
   - `PRODUCT_AMOUNT=990`
+
+## Netlify 배포 (현재 권장 설정)
+- Deploy 방식: Git 연동 배포 (단순 파일 드래그 업로드는 함수 미동작)
+- Publish directory: `public`
+- Functions directory: `netlify/functions` (`netlify.toml`에 포함됨)
+- Environment variables:
+  - `TOSS_CLIENT_KEY`
+  - `TOSS_SECRET_KEY`
+  - `PRODUCT_AMOUNT=990`
+
+배포 후 확인:
+- `https://도메인/api/payment/config` 접속 시 JSON 응답
+- 결제 완료 후 `payment-success.html`에서 승인 완료 메시지 확인

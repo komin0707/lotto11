@@ -25,3 +25,13 @@ npm run start
 - `TOSS_CLIENT_KEY`, `TOSS_SECRET_KEY`를 운영 키로 교체
 - 도메인 HTTPS 적용
 - 승인 성공 후 실제 결과 공개 로직(잠금 해제) 연결
+
+## 5) Netlify 배포 시 필수
+- Git 연동 배포를 사용해야 함수(`netlify/functions`)가 동작합니다.
+- `netlify.toml`이 있으므로 아래만 맞추면 됩니다.
+  - Publish directory: `public`
+  - Functions directory: `netlify/functions`
+  - Env: `TOSS_CLIENT_KEY`, `TOSS_SECRET_KEY`, `PRODUCT_AMOUNT`
+
+배포 확인:
+- `/api/payment/config` 호출이 200 JSON이면 정상

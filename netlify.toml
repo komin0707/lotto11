@@ -1,0 +1,15 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/payment/config"
+  to = "/.netlify/functions/payment-config"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/payment/confirm"
+  to = "/.netlify/functions/payment-confirm"
+  status = 200
+  force = true
