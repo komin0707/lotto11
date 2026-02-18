@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>복권 추천일 분석기</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap");
+
+    :root {
+      --bg: #edf7f6;
+      --panel: #ffffff;
+      --ink: #1b2730;
+      --ink-soft: #53656d;
+      --line: #cbe3de;
+      --accent: #2f8f7a;
+      --accent-2: #57b49f;
+      --good: #1f8a74;
+      --danger: #df6b57;
+      --shadow: 0 14px 28px rgba(27, 39, 48, 0.09);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Gowun Dodum", "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 500px at 0% 0%, #e4f7f3 0%, transparent 55%),
+        radial-gradient(800px 460px at 100% -10%, #ffeede 0%, transparent 55%),
+        var(--bg);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(960px, 92vw);
+      margin: 0 auto;
+      padding: 24px 0 56px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: "Jua", "Gowun Dodum", sans-serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .logo img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .back {
+      color: var(--ink-soft);
+      text-decoration: none;
+      font-size: 0.9rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 12px;
+      background: #fff;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Jua", "Gowun Dodum", sans-serif;
+      font-weight: 400;
+      font-size: clamp(1.4rem, 3vw, 2.1rem);
+      letter-spacing: -0.01em;
+    }
+
+    .desc {
+      margin: 8px 0 0;
+      color: var(--ink-soft);
+      line-height: 1.55;
+      font-size: 0.92rem;
+    }
+
+    .grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px;
+      font-size: 0.92rem;
+      font-family: inherit;
+    }
+
+    input:focus, select:focus {
+      outline: 2px solid rgba(47, 143, 122, 0.2);
+      border-color: #81cdbf;
+    }
+
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 28px;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+    }
+
+    .check input {
+      width: auto;
+      margin: 0;
+      accent-color: var(--accent);
+    }
+
+    .actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 11px;
+      padding: 10px 14px;
+      font-size: 0.92rem;
+      font-family: "Jua", "Gowun Dodum", sans-serif;
+      font-weight: 400;
+      cursor: pointer;
+    }
+
+    .btn.primary {
+      background: linear-gradient(180deg, var(--accent-2), var(--accent));
+      color: #fff;
+      box-shadow: 0 10px 18px rgba(47, 143, 122, 0.25);
+    }
+
+    .result {
+      margin-top: 12px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    .result p {
+      margin: 0 0 8px;
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+    }
+
+    .calendar {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .cal-head, .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .cal-head div {
+      text-align: center;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--ink-soft);
+      padding: 8px 4px;
+      border-bottom: 1px solid var(--line);
+      background: #f4fffc;
+    }
+
+    .cell {
+      min-height: 80px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 6px;
+      display: grid;
+      align-content: start;
+      gap: 4px;
+    }
+
+    .cell:nth-child(7n) { border-right: 0; }
+    .cell.blank { background: #f7fbfa; }
+
+    .date {
+      font-size: 0.84rem;
+      color: var(--ink-soft);
+    }
+
+    .cell.strong .date {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    .point {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--good);
+      line-height: 1.3;
+    }
+
+    .score {
+      color: var(--good);
+      font-weight: 700;
+    }
+
+    .credit {
+      text-align: center;
+      font-size: 0.74rem;
+      color: #7b8b91;
+      margin: 8px 0 0;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .check {
+        margin-top: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="top">
+      <div class="logo"><img src="assets/ticket.svg" alt="" />복권운 날짜 분석기</div>
+      <a class="back" href="index.html">랜딩으로 돌아가기</a>
+    </div>
+
+    <section class="card">
+      <h1>이번 달 복권 사보기 추천일 찾기</h1>
+      <p class="desc">생년월일(시간 미상 가능)을 입력하면, 조회일 기준 이번 달/다음 달 중 선택한 월의 추천 날짜를 뽑아줍니다.</p>
+
+      <div class="grid">
+        <div>
+          <label for="birthDate">생년월일</label>
+          <input id="birthDate" type="date" />
+        </div>
+        <div>
+          <label for="birthTime">출생 시간</label>
+          <input id="birthTime" type="time" value="12:00" />
+        </div>
+        <div>
+          <label for="targetPeriod">확인 월 (이번 달/다음 달)</label>
+          <select id="targetPeriod"></select>
+        </div>
+        <div class="check">
+          <input id="timeUnknown" type="checkbox" />
+          <label for="timeUnknown">시간 미상(시주 제외)</label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="runBtn">추천일 계산하기</button>
+      </div>
+
+      <div class="result" id="result">
+        <p>아직 계산 전이에요.</p>
+      </div>
+    </section>
+    <div class="credit">Cute icons by OpenMoji (CC BY-SA 4.0)</div>
+  </main>
+
+  <script>
+    const stems = [
+      { ch: "갑", element: "목", yinYang: "양" },
+      { ch: "을", element: "목", yinYang: "음" },
+      { ch: "병", element: "화", yinYang: "양" },
+      { ch: "정", element: "화", yinYang: "음" },
+      { ch: "무", element: "토", yinYang: "양" },
+      { ch: "기", element: "토", yinYang: "음" },
+      { ch: "경", element: "금", yinYang: "양" },
+      { ch: "신", element: "금", yinYang: "음" },
+      { ch: "임", element: "수", yinYang: "양" },
+      { ch: "계", element: "수", yinYang: "음" }
+    ];
+
+    const branches = [
+      { ch: "자", hidden: [9] },
+      { ch: "축", hidden: [5, 9, 7] },
+      { ch: "인", hidden: [0, 2, 4] },
+      { ch: "묘", hidden: [1] },
+      { ch: "진", hidden: [4, 1, 9] },
+      { ch: "사", hidden: [2, 6, 4] },
+      { ch: "오", hidden: [3, 5] },
+      { ch: "미", hidden: [5, 3, 1] },
+      { ch: "신", hidden: [6, 8, 4] },
+      { ch: "유", hidden: [7] },
+      { ch: "술", hidden: [4, 7, 3] },
+      { ch: "해", hidden: [8, 0] }
+    ];
+
+    const controls = { 목: "토", 화: "금", 토: "수", 금: "목", 수: "화" };
+    const DAY_OFFSET = 2;
+    const ALLOWED_PERIODS = new Set();
+
+    function mod(n, m) {
+      return ((n % m) + m) % m;
+    }
+
+    function parseBirthDate(dateRaw, timeRaw, timeUnknown) {
+      if (!dateRaw) return null;
+      const safeTime = timeUnknown ? "12:00" : (timeRaw || "12:00");
+      const d = new Date(`${dateRaw}T${safeTime}:00`);
+      if (Number.isNaN(d.getTime())) return null;
+      return d;
+    }
+
+    function toNoonDate(date) {
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0, 0);
+    }
+
+    function diffDays(a, b) {
+      const ms = 24 * 60 * 60 * 1000;
+      return Math.round((toNoonDate(a) - toNoonDate(b)) / ms);
+    }
+
+    function getDayPillar(date, dayOffset = 0) {
+      const ref = new Date(1984, 1, 2, 12, 0, 0, 0);
+      const dayCount = diffDays(date, ref) + dayOffset;
+      const idx = mod(dayCount, 60);
+      return { stem: mod(idx, 10), branch: mod(idx, 12) };
+    }
+
+    function getPyeonjaeStem(dayStem) {
+      const dm = stems[dayStem];
+      const wealthElement = controls[dm.element];
+      return stems.findIndex((s) => s.element === wealthElement && s.yinYang === dm.yinYang);
+    }
+
+    function daysInMonth(year, month) {
+      return new Date(year, month, 0).getDate();
+    }
+
+    function scoreDay(dayPillar, pyeonjaeStem) {
+      let score = 0;
+      const reasons = [];
+      if (dayPillar.stem === pyeonjaeStem) {
+        score += 6;
+        reasons.push("천간 금전 신호");
+      }
+      const dayHidden = branches[dayPillar.branch].hidden;
+      if (dayHidden.includes(pyeonjaeStem)) {
+        score += 3;
+        reasons.push("지장간 보조 신호");
+      }
+      return { score, reasons };
+    }
+
+    function setupTargetPeriods() {
+      const targetPeriod = document.getElementById("targetPeriod");
+      const now = new Date();
+      const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+      const candidates = [
+        { date: thisMonth, label: "이번 달" },
+        { date: nextMonth, label: "다음 달" }
+      ];
+
+      targetPeriod.innerHTML = candidates.map((item) => {
+        const year = item.date.getFullYear();
+        const month = item.date.getMonth() + 1;
+        const value = `${year}-${String(month).padStart(2, "0")}`;
+        ALLOWED_PERIODS.add(value);
+        return `<option value="${value}">${year}년 ${month}월 (${item.label})</option>`;
+      }).join("");
+    }
+
+    function renderCalendar(year, month, dayRows) {
+      const startWeekday = new Date(year, month - 1, 1).getDay(); // 0=일 ... 6=토
+      const endPadding = (7 - ((startWeekday + dayRows.length) % 7)) % 7;
+      const labels = ["일", "월", "화", "수", "목", "금", "토"];
+
+      const head = labels.map((d) => `<div>${d}</div>`).join("");
+      const leadBlanks = Array.from({ length: startWeekday }, () => '<div class="cell blank"></div>').join("");
+      const days = dayRows.map((row) => `
+        <div class="cell ${row.score >= 6 ? "strong" : ""}" title="${row.reasons || "추천 신호 약함"}">
+          <div class="date">${row.day}</div>
+          ${row.score > 0 ? `<div class="point">${row.score}점</div>` : ""}
+        </div>
+      `).join("");
+      const tailBlanks = Array.from({ length: endPadding }, () => '<div class="cell blank"></div>').join("");
+
+      return `
+        <div class="calendar">
+          <div class="cal-head">${head}</div>
+          <div class="cal-grid">${leadBlanks}${days}${tailBlanks}</div>
+        </div>
+      `;
+    }
+
+    function run() {
+      const birthDateRaw = document.getElementById("birthDate").value;
+      const birthTimeRaw = document.getElementById("birthTime").value;
+      const timeUnknown = document.getElementById("timeUnknown").checked;
+      const targetPeriodRaw = document.getElementById("targetPeriod").value;
+      const dayOffset = DAY_OFFSET;
+      const out = document.getElementById("result");
+
+      if (!birthDateRaw) {
+        out.innerHTML = "<p>생년월일을 입력해 주세요.</p>";
+        return;
+      }
+      if (!timeUnknown && !birthTimeRaw) {
+        out.innerHTML = "<p>출생 시간을 입력하거나 시간 미상을 체크해 주세요.</p>";
+        return;
+      }
+      if (!targetPeriodRaw || !ALLOWED_PERIODS.has(targetPeriodRaw)) {
+        out.innerHTML = "<p>확인 월은 이번 달/다음 달만 선택할 수 있어요.</p>";
+        return;
+      }
+
+      const [yearRaw, monthRaw] = targetPeriodRaw.split("-");
+      const targetYear = Number(yearRaw);
+      const targetMonth = Number(monthRaw);
+
+      const birthDate = parseBirthDate(birthDateRaw, birthTimeRaw, timeUnknown);
+      if (!birthDate) {
+        out.innerHTML = "<p>생년월일/시간 형식을 확인해 주세요.</p>";
+        return;
+      }
+
+      const natalDay = getDayPillar(birthDate, dayOffset);
+      const pyeonjaeStem = getPyeonjaeStem(natalDay.stem);
+      const maxDay = daysInMonth(targetYear, targetMonth);
+      const allDays = [];
+
+      for (let d = 1; d <= maxDay; d++) {
+        const date = new Date(targetYear, targetMonth - 1, d, 12, 0, 0, 0);
+        const dayPillar = getDayPillar(date, dayOffset);
+        const scored = scoreDay(dayPillar, pyeonjaeStem);
+        allDays.push({
+          day: date.getDate(),
+          stem: stems[dayPillar.stem].ch,
+          branch: branches[dayPillar.branch].ch,
+          score: scored.score,
+          reasons: scored.reasons.join(", ")
+        });
+      }
+      const strong = allDays.filter((d) => d.score >= 6);
+      const calendar = renderCalendar(targetYear, targetMonth, allDays);
+      const strongText = strong.length
+        ? strong.map((d) => `${d.day}일(${d.score}점)`).join(", ")
+        : "추천일 없음";
+      out.innerHTML = `
+        <p>${targetYear}년 ${targetMonth}월 기준, 일간 ${stems[natalDay.stem].ch} 추천 신호 ${stems[pyeonjaeStem].ch}. 점수 6점 이상: ${strong.length}일</p>
+        ${calendar}
+        <p style="margin-top:10px">복권 사보기 추천 날짜: <span class="score">${strongText}</span></p>
+      `;
+    }
+
+    setupTargetPeriods();
+    document.getElementById("runBtn").addEventListener("click", run);
+    document.getElementById("timeUnknown").addEventListener("change", (e) => {
+      document.getElementById("birthTime").disabled = e.target.checked;
+    });
+  </script>
+</body>
+</html>

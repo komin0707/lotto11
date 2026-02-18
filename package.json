@@ -1,0 +1,14 @@
+{
+  "name": "lotto-landing-payment",
+  "private": true,
+  "version": "1.0.0",
+  "description": "복권 사볼날 랜딩 + 결제 서버",
+  "type": "module",
+  "scripts": {
+    "start": "node payment-server.mjs",
+    "dev": "node payment-server.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

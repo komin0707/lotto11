@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>결제 승인 중 | 복권운 월간 리포트</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f6fbf9;
+      --card: #ffffff;
+      --ink: #1d2f35;
+      --sub: #5f737b;
+      --line: #d6e9e3;
+      --ok: #2f8f7a;
+      --warn: #be5f48;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Gowun Dodum", sans-serif;
+      background: linear-gradient(180deg, #f9fffd, var(--bg));
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+    .card {
+      width: min(520px, 100%);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 14px 30px rgba(35, 67, 78, 0.09);
+      padding: 20px;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+    }
+    .status {
+      margin: 0 0 14px;
+      color: var(--sub);
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+    .status.ok { color: var(--ok); font-weight: 700; }
+    .status.error { color: var(--warn); font-weight: 700; }
+    .meta {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fbfffe;
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+      font-size: 0.92rem;
+    }
+    .meta div {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px dashed #e2f0ec;
+      padding-bottom: 7px;
+    }
+    .meta div:last-child { border-bottom: 0; padding-bottom: 0; }
+    .label { color: var(--sub); }
+    .value { text-align: right; font-weight: 700; }
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    button, a {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 12px;
+      font: inherit;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .primary {
+      background: linear-gradient(180deg, #3ea48e, #2f8f7a);
+      color: #fff;
+    }
+    .secondary {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>결제 승인 처리 중이에요</h1>
+    <p id="statusText" class="status">잠시만 기다려 주세요.</p>
+
+    <section class="meta" id="metaBox">
+      <div><span class="label">상품</span><span class="value">복권 사볼날 리포트</span></div>
+      <div><span class="label">금액</span><span class="value" id="amountText">-</span></div>
+      <div><span class="label">주문번호</span><span class="value" id="orderIdText">-</span></div>
+      <div><span class="label">승인시각</span><span class="value" id="approvedAtText">-</span></div>
+    </section>
+
+    <div class="actions">
+      <button class="secondary" id="retryBtn" type="button">승인 다시 시도</button>
+      <a class="primary" href="index.html">메인으로 돌아가기</a>
+    </div>
+  </main>
+
+  <script>
+    const statusText = document.getElementById("statusText");
+    const amountText = document.getElementById("amountText");
+    const orderIdText = document.getElementById("orderIdText");
+    const approvedAtText = document.getElementById("approvedAtText");
+    const retryBtn = document.getElementById("retryBtn");
+
+    function setStatus(message, type = "") {
+      statusText.textContent = message;
+      statusText.className = `status ${type}`.trim();
+    }
+
+    function formatAmount(amount) {
+      return `${Number(amount).toLocaleString("ko-KR")}원`;
+    }
+
+    async function confirmPayment() {
+      const search = new URLSearchParams(window.location.search);
+      const paymentKey = search.get("paymentKey");
+      const orderId = search.get("orderId");
+      const amount = Number(search.get("amount"));
+
+      if (!paymentKey || !orderId || !Number.isFinite(amount)) {
+        setStatus("결제 정보가 올바르지 않습니다. 다시 결제해 주세요.", "error");
+        return;
+      }
+
+      amountText.textContent = formatAmount(amount);
+      orderIdText.textContent = orderId;
+      approvedAtText.textContent = "승인 처리 중";
+      setStatus("결제 승인 요청을 처리하고 있어요.");
+      retryBtn.disabled = true;
+
+      try {
+        const response = await fetch("/api/payment/confirm", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ paymentKey, orderId, amount })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          const errorMessage = data?.message || "결제 승인이 실패했습니다.";
+          throw new Error(errorMessage);
+        }
+
+        approvedAtText.textContent = data?.approvedAt || "완료";
+        setStatus("결제가 완료되었습니다. 리포트를 확인해 주세요.", "ok");
+      } catch (error) {
+        setStatus(`${error?.message || "결제 승인 중 오류가 발생했습니다."}`, "error");
+      } finally {
+        retryBtn.disabled = false;
+      }
+    }
+
+    retryBtn.addEventListener("click", () => {
+      void confirmPayment();
+    });
+
+    void confirmPayment();
+  </script>
+</body>
+</html>

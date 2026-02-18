@@ -1,0 +1,1529 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>복권 사볼날, 사주(편재) 기준 어떤 날 구매할지 알려드립니다</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap");
+
+    :root {
+      --bg: #edf7f6;
+      --bg-soft: #f6fcfb;
+      --paper: #ffffff;
+      --line: #cbe3de;
+      --ink: #1b2730;
+      --ink-soft: #53656d;
+      --accent: #2f8f7a;
+      --accent-hi: #57b49f;
+      --gold: #f2ae64;
+      --ok: #1f8a74;
+      --danger: #df6b57;
+      --shadow: 0 14px 28px rgba(27, 39, 48, 0.09);
+      --radius-xl: 20px;
+      --radius-lg: 14px;
+      --radius-sm: 10px;
+      --hero-grad: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(239, 250, 247, 0.92));
+      --cta-grad: linear-gradient(180deg, var(--accent-hi), var(--accent));
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Gowun Dodum", "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1000px 680px at 0% -10%, #e4f7f3 0%, transparent 60%),
+        radial-gradient(860px 520px at 100% 0%, #ffeede 0%, transparent 62%),
+        linear-gradient(180deg, #f8fffd 0%, var(--bg) 32%, #e9f5f2 100%);
+      min-height: 100vh;
+      line-height: 1.48;
+    }
+
+    .texture {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.06;
+      background-image: repeating-linear-gradient(45deg, #000 0, #000 1px, transparent 1px, transparent 5px);
+      mix-blend-mode: soft-light;
+    }
+
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .bg-glow::before,
+    .bg-glow::after {
+      content: "";
+      position: absolute;
+      width: 42vw;
+      height: 42vw;
+      border-radius: 50%;
+      filter: blur(72px);
+      opacity: 0.24;
+    }
+
+    .bg-glow::before {
+      top: -8vw;
+      left: -8vw;
+      background: #a8ede0;
+    }
+
+    .bg-glow::after {
+      right: -10vw;
+      top: 18vh;
+      background: #ffd4b2;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 2;
+      width: min(980px, 92vw);
+      margin: 0 auto;
+      padding: 22px 0 140px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .seal {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid #9fd8cc;
+      background: radial-gradient(circle at 30% 30%, #ecfffa, #8cd8c8 75%);
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4);
+    }
+
+    .logo {
+      font-family: "Jua", "Gowun Dodum", sans-serif;
+      font-size: 1.02rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .chips {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .chip {
+      border: 1px solid #c7ebe4;
+      background: rgba(244, 255, 252, 0.92);
+      color: #2f7a69;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 7px 10px;
+      letter-spacing: 0.01em;
+    }
+
+    .hero {
+      border: 1px solid #cde8e2;
+      border-radius: var(--radius-xl);
+      background: var(--hero-grad);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(62% 68% at 18% 8%, rgba(255, 255, 255, 0.55), transparent 72%),
+        radial-gradient(48% 42% at 100% 90%, rgba(131, 201, 182, 0.18), transparent 80%);
+    }
+
+    .hero-inner {
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+      position: relative;
+    }
+
+    .hero-buddies {
+      position: absolute;
+      right: 14px;
+      top: 8px;
+      width: 152px;
+      height: 78px;
+      pointer-events: none;
+    }
+
+    .buddy {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      filter: drop-shadow(0 4px 8px rgba(19, 78, 66, 0.16));
+      animation: floaty 3.2s ease-in-out infinite;
+    }
+
+    .buddy.b1 { right: 2px; top: 2px; }
+    .buddy.b2 { right: 34px; top: 22px; animation-delay: 0.45s; }
+    .buddy.b3 { right: 66px; top: 4px; animation-delay: 0.85s; }
+    .buddy.b4 { right: 88px; top: 30px; animation-delay: 1.25s; }
+    .buddy.b5 { right: 120px; top: 12px; animation-delay: 1.65s; }
+    .buddy.b6 {
+      right: 110px;
+      top: 40px;
+      width: 34px;
+      height: 34px;
+      animation-delay: 2.05s;
+    }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .title-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .title-icon {
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+    }
+
+    .headline-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.83rem;
+      color: #2f7b69;
+      font-weight: 680;
+      margin-bottom: 12px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(47, 143, 122, 0.2);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.18); opacity: 0.65; }
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Jua", "Gowun Dodum", sans-serif;
+      font-size: clamp(2rem, 7vw, 3.1rem);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      max-width: 14ch;
+    }
+
+    .hero p {
+      margin: 12px 0 0;
+      color: var(--ink-soft);
+      max-width: 62ch;
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 12px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.94);
+      padding: 14px;
+    }
+
+    .panel h2 {
+      margin: 0 0 9px;
+      font-family: "Jua", "Gowun Dodum", sans-serif;
+      font-size: 1.06rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .price-line {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 2px;
+      margin-bottom: 6px;
+    }
+
+    .price-now {
+      color: var(--danger);
+      font-size: 1.32rem;
+      font-weight: 880;
+      letter-spacing: -0.03em;
+    }
+
+    .price-old {
+      color: #7a8c91;
+      font-size: 0.84rem;
+      text-decoration: line-through;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--ink-soft);
+      font-size: 0.82rem;
+      font-weight: 630;
+    }
+
+    input, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      padding: 11px;
+      color: var(--ink);
+      font-size: 0.92rem;
+      font-family: inherit;
+    }
+
+    input:focus, select:focus {
+      outline: 2px solid rgba(47, 143, 122, 0.2);
+      border-color: #81cdbf;
+    }
+
+    .check {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink-soft);
+      font-size: 0.88rem;
+    }
+
+    .check input {
+      width: auto;
+      margin: 0;
+      accent-color: var(--accent);
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 12px;
+      font-family: "Jua", "Gowun Dodum", sans-serif;
+      font-size: 0.95rem;
+      font-weight: 400;
+      padding: 12px 15px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      line-height: 1;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn.primary {
+      background: var(--cta-grad);
+      color: #fff;
+      box-shadow: 0 11px 20px rgba(47, 143, 122, 0.25);
+    }
+
+    .btn.light {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .full { width: 100%; }
+
+    .note {
+      margin: 8px 0 0;
+      font-size: 0.81rem;
+      color: #63777d;
+      line-height: 1.42;
+    }
+
+    .preview-sample {
+      border: 1px solid #d8ece8;
+      border-radius: 12px;
+      padding: 10px;
+      background: linear-gradient(180deg, #ffffff, #f4fffc);
+      margin-top: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .preview-sample ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 7px;
+      filter: blur(4px);
+      user-select: none;
+    }
+
+    .preview-sample li {
+      border: 1px dashed #ddf0ec;
+      border-radius: 9px;
+      padding: 8px;
+      color: #5f7278;
+      font-size: 0.85rem;
+      background: #fff;
+    }
+
+    .sample-lock {
+      position: absolute;
+      inset: auto 0 0;
+      padding: 12px;
+      background: linear-gradient(180deg, rgba(248, 255, 253, 0.4), rgba(245, 255, 252, 0.97) 48%);
+      text-align: center;
+    }
+
+    .sample-lock strong {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 0.88rem;
+      color: #2f7b69;
+    }
+
+    .stat-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: rgba(250, 255, 254, 0.94);
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.12rem;
+      letter-spacing: -0.02em;
+      color: var(--danger);
+      margin-bottom: 4px;
+    }
+
+    .stat span {
+      color: var(--ink-soft);
+      font-size: 0.84rem;
+    }
+
+    .preview-result {
+      border: 1px solid #cde6e0;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(180deg, #ffffff, #f4fffc);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.32s ease, transform 0.32s ease;
+      display: none;
+    }
+
+    .preview-result.show {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .preview-result h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .preview-days {
+      margin-top: 11px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .day-row {
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #fff;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .day-copy strong {
+      display: block;
+      font-size: 0.95rem;
+      letter-spacing: -0.01em;
+    }
+
+    .day-copy small {
+      color: var(--ink-soft);
+      font-size: 0.81rem;
+    }
+
+    .day-score {
+      color: var(--ok);
+      font-weight: 820;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .locked-box {
+      position: relative;
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .locked-photo {
+      position: relative;
+      border: 1px solid #d8ece7;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .locked-photo img {
+      display: block;
+      width: 100%;
+      height: 128px;
+      object-fit: cover;
+      filter: blur(2px) saturate(0.9);
+      transform: scale(1.03);
+    }
+
+    .locked-photo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.3)),
+        repeating-linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.12) 0,
+          rgba(255, 255, 255, 0.12) 14px,
+          rgba(0, 0, 0, 0.04) 14px,
+          rgba(0, 0, 0, 0.04) 28px
+        );
+      pointer-events: none;
+    }
+
+    .locked-lines {
+      display: grid;
+      gap: 6px;
+      filter: blur(4px);
+      user-select: none;
+    }
+
+    .locked-lines div {
+      border-bottom: 1px dashed #e1f1ed;
+      padding: 7px 2px;
+      color: #5f7278;
+      font-size: 0.86rem;
+    }
+
+    .locked-lines div:last-child { border-bottom: 0; }
+
+    .locked-overlay {
+      position: absolute;
+      inset: auto 0 0;
+      background: linear-gradient(180deg, rgba(247, 255, 252, 0.3), rgba(247, 255, 252, 0.97) 46%);
+      padding: 14px;
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+
+    .locked-overlay p {
+      margin: 0;
+      color: #54686f;
+      font-size: 0.9rem;
+      line-height: 1.42;
+    }
+
+    .highlight-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 7px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #f3c9b0;
+      background: #fff3ea;
+      color: #c1563f;
+      font-size: 0.83rem;
+      font-weight: 700;
+    }
+
+    .flow,
+    .trust,
+    .faq,
+    .payment {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .flow h3,
+    .payment h3,
+    .faq h3 {
+      margin: 0;
+      font-family: "Jua", "Gowun Dodum", sans-serif;
+      font-size: 1.12rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .flow-grid {
+      margin-top: 11px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .flow-item {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px;
+      font-size: 0.84rem;
+      color: var(--ink-soft);
+      line-height: 1.42;
+    }
+
+    .flow-item strong {
+      display: block;
+      color: var(--ink);
+      margin-bottom: 4px;
+      font-size: 0.88rem;
+    }
+
+    .trust {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      padding: 8px;
+    }
+
+    .trust-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 12px;
+    }
+
+    .trust-card strong {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      letter-spacing: -0.01em;
+    }
+
+    .trust-card p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 0.83rem;
+      line-height: 1.45;
+    }
+
+    .payment {
+      background: linear-gradient(160deg, #ffffff, #fff3ea 78%);
+      border-color: #f2c9ab;
+    }
+
+    .pay-top {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 9px;
+    }
+
+    .pay-desc {
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      line-height: 1.48;
+    }
+
+    .pay-emphasis {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 8px;
+      padding: 7px 11px;
+      border-radius: 10px;
+      border: 1px solid #f3c9b0;
+      background: #fff3ea;
+      color: #be543d;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .pay-price {
+      text-align: right;
+      line-height: 1;
+    }
+
+    .pay-price strong {
+      font-size: 2rem;
+      color: var(--danger);
+      letter-spacing: -0.03em;
+    }
+
+    .pay-price span {
+      display: block;
+      margin-top: 3px;
+      color: #7f8f95;
+      font-size: 0.8rem;
+      text-decoration: line-through;
+    }
+
+    .benefits {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--ink-soft);
+      font-size: 0.86rem;
+      line-height: 1.44;
+    }
+
+    .benefits li {
+      margin-bottom: 4px;
+    }
+
+    .guard {
+      margin-top: 8px;
+      display: grid;
+      gap: 5px;
+      color: var(--ink-soft);
+      font-size: 0.82rem;
+    }
+
+    .guard strong { color: var(--ink); }
+
+    .faq details {
+      border-top: 1px solid #e2f0ed;
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+
+    .faq details:first-of-type {
+      margin-top: 10px;
+    }
+
+    .faq summary {
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.92rem;
+      letter-spacing: -0.01em;
+    }
+
+    .credit {
+      text-align: center;
+      font-size: 0.74rem;
+      color: #7b8b91;
+      margin-top: 0;
+    }
+
+    .company-footer {
+      border: 1px solid #cde6e1;
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.92);
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+      box-shadow: 0 8px 20px rgba(27, 39, 48, 0.06);
+    }
+
+    .company-name {
+      font-family: "Jua", "Gowun Dodum", sans-serif;
+      font-size: 1rem;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+
+    .company-links {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .company-links a {
+      color: #2a7f6d;
+      font-size: 0.86rem;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    .company-links a:hover {
+      text-decoration: underline;
+    }
+
+    .company-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .company-actions a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 42px;
+      border-radius: 10px;
+      border: 1px solid #cbe8e1;
+      background: #f6fffc;
+      color: #2a7f6d;
+      font-size: 0.86rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .company-actions a:hover {
+      background: #ebfbf6;
+    }
+
+    .faq p {
+      margin: 6px 0 0;
+      color: var(--ink-soft);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .sticky {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 30;
+      padding: 10px;
+      border-top: 1px solid #cde5e0;
+      background: rgba(247, 255, 253, 0.95);
+      backdrop-filter: blur(6px);
+    }
+
+    .sticky .btn {
+      width: min(620px, 95vw);
+      margin: 0 auto;
+      display: flex;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.42s ease, transform 0.42s ease;
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 900px) {
+      .hero-inner { padding: 16px; }
+
+      .hero-buddies {
+        right: 10px;
+        top: 8px;
+        width: 120px;
+      }
+
+      .buddy {
+        width: 24px;
+        height: 24px;
+      }
+
+      .buddy.b6 {
+        width: 30px;
+        height: 30px;
+      }
+
+      h1 {
+        font-size: clamp(1.82rem, 9vw, 2.5rem);
+        max-width: 100%;
+      }
+
+      .hero-grid,
+      .trust {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid,
+      .flow-grid,
+      .stat-strip {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .pay-top {
+        align-items: center;
+      }
+
+      .pay-price {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .wrap { width: min(94vw, 980px); }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .chips { justify-content: flex-start; }
+
+      .form-grid,
+      .flow-grid,
+      .stat-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .btn {
+        min-height: 52px;
+      }
+
+      .hero-buddies {
+        right: 8px;
+        top: 10px;
+        width: 100px;
+      }
+
+      .buddy.b6 {
+        width: 27px;
+        height: 27px;
+      }
+
+      .panel,
+      .flow,
+      .faq,
+      .payment,
+      .preview-result {
+        padding: 13px;
+      }
+
+      .company-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-glow" aria-hidden="true"></div>
+  <div class="texture" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <header class="topbar reveal">
+      <div class="brand">
+        <div class="seal" aria-hidden="true"></div>
+        <div class="logo">복권운 월간 리포트</div>
+      </div>
+      <div class="chips">
+        <span class="chip">결제 후 즉시 확인</span>
+        <span class="chip">오늘 복권 사도 될지 고민줄이기</span>
+      </div>
+    </header>
+
+    <section class="hero reveal">
+      <div class="hero-inner">
+        <div class="hero-buddies" aria-hidden="true">
+          <img class="buddy b1" src="assets/clover.svg" alt="" />
+          <img class="buddy b2" src="assets/star.svg" alt="" />
+          <img class="buddy b3" src="assets/blossom.svg" alt="" />
+          <img class="buddy b4" src="assets/ticket.svg" alt="" />
+          <img class="buddy b5" src="assets/money.svg" alt="" />
+          <img class="buddy b6" src="assets/banknote.svg" alt="" />
+        </div>
+        <div>
+          <span class="headline-top"><span class="dot"></span>이번 달 복권 캘린더</span>
+          <h1>복권 사볼날,<br />사주(편재) 기준<br />어떤 날 구매할지 알려드립니다</h1>
+          <p>
+            생년월일 입력하면 먼저 추천 날짜 2개를 보여드려요.
+            더 자세한 날짜는 <strong>990원 결제 후 바로</strong> 확인할 수 있어요.
+            어렵고 긴 설명 없이, 바로 써먹을 날짜만 가볍게 정리했습니다.
+          </p>
+          <div class="price-line">
+            <span class="price-now">990원</span>
+            <span class="price-old">3,900원</span>
+          </div>
+        </div>
+
+        <div class="hero-grid">
+          <article class="panel">
+            <h2><span class="title-row"><img class="title-icon" src="assets/ticket.svg" alt="" />1) 빠르게 입력하고 미리보기</span></h2>
+            <div class="form-grid">
+              <div>
+                <label for="birthDate">생년월일</label>
+                <input id="birthDate" type="date" />
+              </div>
+              <div>
+                <label for="birthTime">출생 시간</label>
+                <input id="birthTime" type="time" value="12:00" />
+              </div>
+            </div>
+            <label class="check" for="timeUnknown">
+              <input id="timeUnknown" type="checkbox" />
+              시간 미상(시주 제외)
+            </label>
+            <button class="btn primary full" id="previewBtn" type="button" style="margin-top:10px;">내 추천 날짜 보기</button>
+            <p class="note">입력 정보는 결과 계산용으로만 사용해요.</p>
+          </article>
+
+          <article class="panel">
+            <h2><span class="title-row"><img class="title-icon" src="assets/clover.svg" alt="" />2) 결과는 이렇게 보여드려요</span></h2>
+            <p class="note" style="margin-top:0;">
+              <span data-month-label>이번 달</span> 추천일 2개는 먼저 공개하고,
+              나머지(이번 달+다음 달)는 결제 후 바로 열립니다.
+            </p>
+            <div class="preview-sample">
+              <ul id="samplePreviewList">
+                <li>--일 · --점 · 입력 후 자동 계산</li>
+                <li>--일 · --점 · 입력 후 자동 계산</li>
+                <li>--일 · --점 · 결제 후 전체 공개</li>
+                <li>--일 · --점 · 결제 후 전체 공개</li>
+              </ul>
+              <div class="sample-lock">
+                <strong>나머지 추천 날짜는 잠겨 있어요</strong>
+                <button class="btn light" id="lockedCriteriaBtn" type="button">추천 기준 상세 보기</button>
+              </div>
+            </div>
+            <a class="btn light full" href="natal.html" style="margin-top:10px;">내 기본 운세 먼저 보기</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="stat-strip reveal">
+      <article class="stat">
+        <strong>2개 먼저</strong>
+        <span>결제 전 미리 공개</span>
+      </article>
+      <article class="stat">
+        <strong>딱 990원</strong>
+        <span>추가 과금 없음</span>
+      </article>
+      <article class="stat">
+        <strong>매달 갱신</strong>
+        <span>이번 달+다음 달 추천일 제공</span>
+      </article>
+    </section>
+
+    <section id="previewResult" class="preview-result">
+      <h3><span class="title-row"><img class="title-icon" src="assets/star.svg" alt="" />미리보기 결과</span></h3>
+      <p class="note" style="margin-top:6px;">
+        <span data-month-label>이번 달</span> 추천 점수 상위 2개를 먼저 보여드려요.
+      </p>
+      <div id="previewDays" class="preview-days"></div>
+      <div class="locked-box">
+        <div class="locked-photo" aria-hidden="true">
+          <img src="assets/preview-mosaic.svg" alt="" />
+        </div>
+        <div class="locked-lines" id="lockedLines"></div>
+        <div class="locked-overlay">
+          <p>
+            나머지 추천 날짜는 잠겨 있어요.<br />
+            <strong>990원 결제하면 이번 달+다음 달 전체 추천일 공개</strong>
+          </p>
+          <div class="highlight-pill">구매 시 이번 달+다음 달 전체 확인 가능</div>
+          <button class="btn primary" id="unlockTopBtn" type="button">990원으로 이번 달+다음 달 전체 보기</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="flow reveal">
+      <h3><span class="title-row"><img class="title-icon" src="assets/clover.svg" alt="" />추천 날짜는 이렇게 고릅니다</span></h3>
+      <div class="flow-grid">
+        <article class="flow-item">
+          <strong>1. 내 기본 운 흐름 정리</strong>
+          생년월일 기준 개인 패턴을 먼저 계산
+        </article>
+        <article class="flow-item">
+          <strong>2. 복권 시도 신호 체크</strong>
+          금전/행운 관련 신호를 날짜별로 반영
+        </article>
+        <article class="flow-item">
+          <strong>3. 이번 달+다음 달 전체 스캔</strong>
+          두 달치 날짜를 전부 계산
+        </article>
+        <article class="flow-item">
+          <strong>4. 점수 높은 날 추천</strong>
+          바로 이해되는 한 줄 코멘트 제공
+        </article>
+      </div>
+    </section>
+
+    <section class="trust reveal">
+      <article class="trust-card">
+        <strong>입력은 최소만</strong>
+        <p>이름·전화번호 없이 생년월일만으로 확인할 수 있어요.</p>
+      </article>
+      <article class="trust-card">
+        <strong>결과 미노출 보장</strong>
+        <p>결제 후 결과가 안 열리면 환불 기준으로 처리해드립니다.</p>
+      </article>
+      <article class="trust-card">
+        <strong>과장 없이 안내</strong>
+        <p>허위 후기 없이 실제로 제공되는 내용만 정확히 안내해요.</p>
+      </article>
+    </section>
+
+    <section class="payment reveal" id="paymentBox">
+      <h3><span class="title-row"><img class="title-icon" src="assets/ticket.svg" alt="" />이번 달+다음 달 복권 추천일 전체 공개</span></h3>
+      <div class="pay-top">
+        <div class="pay-desc">
+          1회 결제 · 즉시 확인 · 추가 과금 없음<br />
+          이번 달+다음 달 날짜 리스트 + 점수 + 짧은 코멘트 제공
+          <div class="pay-emphasis">구매 시 이번 달+다음 달 전체 확인 가능</div>
+        </div>
+        <div class="pay-price">
+          <strong>990원</strong>
+          <span>정가 3,900원</span>
+        </div>
+      </div>
+      <ul class="benefits">
+        <li>미리보기 2개 외 전체 추천일 잠금 해제</li>
+        <li>결제 1회로 이번 달+다음 달 추천일 전체 확인 가능</li>
+        <li>시간 미상 사용자도 동일 흐름으로 제공</li>
+        <li>모바일에서 보기 쉬운 간단한 결과 화면</li>
+      </ul>
+      <button class="btn primary full" id="payBtn" type="button">990원으로 이번 달+다음 달 전체 보기</button>
+      <div class="guard">
+        <div><strong>마감:</strong> <span id="deadlineText">이번 달 말일 23:59</span>까지 유효</div>
+        <div><strong>안내:</strong> 본 리포트는 재미/참고용 분석 정보입니다.</div>
+      </div>
+    </section>
+
+    <section class="faq reveal">
+      <h3><span class="title-row"><img class="title-icon" src="assets/blossom.svg" alt="" />자주 묻는 질문</span></h3>
+      <details open>
+        <summary>출생 시간을 모르면 정확도가 많이 떨어지나요?</summary>
+        <p>시간 미상 체크 시 시주를 제외해 계산해요. 추천 결과 확인은 문제없이 가능합니다.</p>
+      </details>
+      <details>
+        <summary>결제하면 어떤 형태로 결과를 받나요?</summary>
+        <p>결제 후 바로 웹 화면에서 이번 달+다음 달 날짜 리스트를 확인해요. 앱 설치는 필요 없습니다.</p>
+      </details>
+      <details>
+        <summary>매달 다시 결제해야 하나요?</summary>
+        <p>네. 월별 흐름이 달라져서 월 단위 리포트(990원)로 제공됩니다.</p>
+      </details>
+      <details>
+        <summary>환불 기준은 어떻게 되나요?</summary>
+        <p>시스템 오류로 결과가 열리지 않으면 확인 후 빠르게 환불 처리해드립니다.</p>
+      </details>
+    </section>
+    <footer class="company-footer reveal">
+      <div class="company-name">(주)셀러스트림</div>
+      <ul class="company-links">
+        <li>채널 URL: <a href="http://pf.kakao.com/_NTAIX" target="_blank" rel="noopener noreferrer">http://pf.kakao.com/_NTAIX</a></li>
+        <li>문의채팅 URL: <a href="http://pf.kakao.com/_NTAIX/chat" target="_blank" rel="noopener noreferrer">http://pf.kakao.com/_NTAIX/chat</a></li>
+      </ul>
+      <div class="company-actions">
+        <a href="http://pf.kakao.com/_NTAIX" target="_blank" rel="noopener noreferrer">카카오 채널 보기</a>
+        <a href="http://pf.kakao.com/_NTAIX/chat" target="_blank" rel="noopener noreferrer">문의채팅 바로가기</a>
+      </div>
+    </footer>
+    <div class="credit">Cute icons by OpenMoji (CC BY-SA 4.0)</div>
+  </main>
+
+  <div class="sticky">
+    <button class="btn primary" id="stickyPayBtn" type="button">990원으로 이번 달+다음 달 전체 보기</button>
+  </div>
+
+  <script src="https://js.tosspayments.com/v1/payment"></script>
+  <script>
+    const previewBtn = document.getElementById("previewBtn");
+    const payBtn = document.getElementById("payBtn");
+    const stickyPayBtn = document.getElementById("stickyPayBtn");
+    const unlockTopBtn = document.getElementById("unlockTopBtn");
+    const lockedCriteriaBtn = document.getElementById("lockedCriteriaBtn");
+    const previewResult = document.getElementById("previewResult");
+    const previewDays = document.getElementById("previewDays");
+    const samplePreviewList = document.getElementById("samplePreviewList");
+    const lockedLines = document.getElementById("lockedLines");
+    const timeUnknown = document.getElementById("timeUnknown");
+    const birthTime = document.getElementById("birthTime");
+    const DAY_OFFSET = 2;
+    const PAYMENT_AMOUNT = 990;
+    const PAYMENT_ORDER_NAME = "복권 사볼날 리포트 (이번 달+다음 달)";
+    const PAYMENT_CONFIG_ENDPOINT = "/api/payment/config";
+    const PAYMENT_PENDING_KEY = "lottoPendingOrder";
+    const FALLBACK_TOSS_CLIENT_KEY = "test_ck_Z1aOwX7K8my5wez79D1B8yQxzvNP";
+    const payButtons = [payBtn, stickyPayBtn, unlockTopBtn];
+    let payInProgress = false;
+    let paymentConfigCache = null;
+
+    const stems = [
+      { ch: "갑", element: "목", yinYang: "양" },
+      { ch: "을", element: "목", yinYang: "음" },
+      { ch: "병", element: "화", yinYang: "양" },
+      { ch: "정", element: "화", yinYang: "음" },
+      { ch: "무", element: "토", yinYang: "양" },
+      { ch: "기", element: "토", yinYang: "음" },
+      { ch: "경", element: "금", yinYang: "양" },
+      { ch: "신", element: "금", yinYang: "음" },
+      { ch: "임", element: "수", yinYang: "양" },
+      { ch: "계", element: "수", yinYang: "음" }
+    ];
+
+    const branches = [
+      { ch: "자", hidden: [9] },
+      { ch: "축", hidden: [5, 9, 7] },
+      { ch: "인", hidden: [0, 2, 4] },
+      { ch: "묘", hidden: [1] },
+      { ch: "진", hidden: [4, 1, 9] },
+      { ch: "사", hidden: [2, 6, 4] },
+      { ch: "오", hidden: [3, 5] },
+      { ch: "미", hidden: [5, 3, 1] },
+      { ch: "신", hidden: [6, 8, 4] },
+      { ch: "유", hidden: [7] },
+      { ch: "술", hidden: [4, 7, 3] },
+      { ch: "해", hidden: [8, 0] }
+    ];
+
+    const controls = { 목: "토", 화: "금", 토: "수", 금: "목", 수: "화" };
+
+    function mod(n, m) {
+      return ((n % m) + m) % m;
+    }
+
+    function parseBirthDate(dateRaw, timeRaw, isTimeUnknown) {
+      if (!dateRaw) return null;
+      const safeTime = isTimeUnknown ? "12:00" : (timeRaw || "12:00");
+      const parsed = new Date(`${dateRaw}T${safeTime}:00`);
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    function toNoonDate(date) {
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0, 0);
+    }
+
+    function diffDays(a, b) {
+      const oneDayMs = 24 * 60 * 60 * 1000;
+      return Math.round((toNoonDate(a) - toNoonDate(b)) / oneDayMs);
+    }
+
+    function getDayPillar(date, dayOffset = 0) {
+      const ref = new Date(1984, 1, 2, 12, 0, 0, 0);
+      const dayCount = diffDays(date, ref) + dayOffset;
+      const idx = mod(dayCount, 60);
+      return { stem: mod(idx, 10), branch: mod(idx, 12) };
+    }
+
+    function getPyeonjaeStem(dayStem) {
+      const dayMaster = stems[dayStem];
+      const wealthElement = controls[dayMaster.element];
+      return stems.findIndex((s) => s.element === wealthElement && s.yinYang === dayMaster.yinYang);
+    }
+
+    function scoreDay(dayPillar, pyeonjaeStem) {
+      let score = 0;
+      const reasons = [];
+      if (dayPillar.stem === pyeonjaeStem) {
+        score += 6;
+        reasons.push("천간 금전 신호");
+      }
+      const dayHidden = branches[dayPillar.branch].hidden;
+      if (dayHidden.includes(pyeonjaeStem)) {
+        score += 3;
+        reasons.push("지장간 보조 신호");
+      }
+      return { score, reasons };
+    }
+
+    function getCurrentPeriod() {
+      const now = new Date();
+      return {
+        year: now.getFullYear(),
+        month: now.getMonth() + 1
+      };
+    }
+
+    function setCurrentMonthContext() {
+      const { year: targetYear, month: targetMonth } = getCurrentPeriod();
+      const monthLabel = `${targetMonth}월`;
+      document.querySelectorAll("[data-month-label]").forEach((el) => {
+        el.textContent = monthLabel;
+      });
+      const end = new Date(targetYear, targetMonth, 0, 23, 59, 0, 0);
+      document.getElementById("deadlineText").textContent =
+        `${targetMonth}월 ${end.getDate()}일 23:59까지 유효`;
+    }
+
+    function buildMonthRows(birthDate, targetYear, targetMonth) {
+      const natalDay = getDayPillar(birthDate, DAY_OFFSET);
+      const pyeonjaeStem = getPyeonjaeStem(natalDay.stem);
+      const maxDay = new Date(targetYear, targetMonth, 0).getDate();
+      const allDays = [];
+
+      for (let day = 1; day <= maxDay; day++) {
+        const date = new Date(targetYear, targetMonth - 1, day, 12, 0, 0, 0);
+        const dayPillar = getDayPillar(date, DAY_OFFSET);
+        const scored = scoreDay(dayPillar, pyeonjaeStem);
+        allDays.push({
+          day,
+          score: scored.score,
+          reason: scored.reasons.join(", ") || "추천 신호 약함"
+        });
+      }
+
+      return allDays;
+    }
+
+    function makePreview(dateRaw, timeRaw, isTimeUnknown) {
+      const birthDate = parseBirthDate(dateRaw, timeRaw, isTimeUnknown);
+      if (!birthDate) {
+        return { ok: false, message: "생년월일/시간 형식을 확인해 주세요." };
+      }
+
+      const { year: targetYear, month: targetMonth } = getCurrentPeriod();
+      const allRows = buildMonthRows(birthDate, targetYear, targetMonth);
+      const strongRows = allRows.filter((d) => d.score >= 6); // analyzer와 동일 기준
+      const withSignalRanked = [...allRows].filter((d) => d.score > 0).sort((a, b) => b.score - a.score || a.day - b.day);
+      const ranked = [...allRows].sort((a, b) => b.score - a.score || a.day - b.day);
+      const openRows = strongRows.length >= 2 ? strongRows.slice(0, 2) : (withSignalRanked.length >= 2 ? withSignalRanked.slice(0, 2) : ranked.slice(0, 2));
+      const lockedRows = strongRows.length > 2 ? strongRows.slice(2, 9) : (withSignalRanked.length > 2 ? withSignalRanked.slice(2, 9) : ranked.slice(2, 9));
+      const sampleRows = [...openRows, ...lockedRows].slice(0, 4);
+
+      previewDays.innerHTML = openRows.map((row) => `
+        <div class="day-row">
+          <div class="day-copy">
+            <strong>${row.day}일 복권 사보기 추천</strong>
+            <small>${row.reason}</small>
+          </div>
+          <div class="day-score">${row.score.toFixed(1)}점</div>
+        </div>
+      `).join("");
+
+      samplePreviewList.innerHTML = sampleRows.map((row, idx) => {
+        const suffix = idx < 2 ? "선공개" : "결제 후 공개";
+        return `<li>${row.day}일 · ${row.score.toFixed(1)}점 · ${suffix}</li>`;
+      }).join("");
+
+      lockedLines.innerHTML = lockedRows.length
+        ? lockedRows.map((row) => `<div>${row.day}일 · ${row.score.toFixed(1)}점 · 상세 멘트 잠금</div>`).join("")
+        : "<div>추가 추천일 없음</div>";
+
+      return { ok: true };
+    }
+
+    function showPreview() {
+      previewResult.classList.add("show");
+      previewResult.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function openPayment() {
+      document.getElementById("paymentBox").scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function buildOrderId() {
+      return `lotto_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    }
+
+    function getPaymentUrls() {
+      const currentUrl = new URL(window.location.href);
+      return {
+        successUrl: new URL("payment-success.html", currentUrl).toString(),
+        failUrl: new URL("payment-fail.html", currentUrl).toString()
+      };
+    }
+
+    function setPayButtonsDisabled(disabled, loadingText = "결제창 여는 중...") {
+      payButtons.forEach((button) => {
+        if (!button.dataset.originalLabel) {
+          button.dataset.originalLabel = button.textContent.trim();
+        }
+        button.disabled = disabled;
+        button.textContent = disabled ? loadingText : button.dataset.originalLabel;
+      });
+    }
+
+    async function loadPaymentConfig() {
+      if (paymentConfigCache) return paymentConfigCache;
+      try {
+        const response = await fetch(PAYMENT_CONFIG_ENDPOINT, {
+          method: "GET",
+          headers: { Accept: "application/json" }
+        });
+        if (!response.ok) {
+          throw new Error("config request failed");
+        }
+        const config = await response.json();
+        paymentConfigCache = {
+          clientKey: config?.clientKey || FALLBACK_TOSS_CLIENT_KEY,
+          amount: Number(config?.amount) || PAYMENT_AMOUNT
+        };
+      } catch (error) {
+        paymentConfigCache = {
+          clientKey: FALLBACK_TOSS_CLIENT_KEY,
+          amount: PAYMENT_AMOUNT
+        };
+      }
+      return paymentConfigCache;
+    }
+
+    async function requestPaymentCheckout() {
+      if (payInProgress) return;
+      if (window.location.protocol === "file:") {
+        alert("결제 테스트는 로컬 서버로 열어야 합니다. 예: node landing/payment-server.mjs");
+        return;
+      }
+      if (typeof TossPayments !== "function") {
+        alert("결제 모듈을 불러오지 못했어요. 네트워크 상태를 확인해 주세요.");
+        return;
+      }
+
+      payInProgress = true;
+      setPayButtonsDisabled(true);
+      try {
+        const paymentConfig = await loadPaymentConfig();
+        const tossPayments = TossPayments(paymentConfig.clientKey);
+        const orderId = buildOrderId();
+        const { successUrl, failUrl } = getPaymentUrls();
+        localStorage.setItem(PAYMENT_PENDING_KEY, JSON.stringify({
+          orderId,
+          amount: paymentConfig.amount,
+          createdAt: new Date().toISOString()
+        }));
+
+        await tossPayments.requestPayment("카드", {
+          amount: paymentConfig.amount,
+          orderId,
+          orderName: PAYMENT_ORDER_NAME,
+          customerName: "고객",
+          successUrl,
+          failUrl
+        });
+      } catch (error) {
+        const message = error?.message || "결제창을 여는 중 문제가 발생했어요.";
+        alert(message);
+        payInProgress = false;
+        setPayButtonsDisabled(false);
+      }
+    }
+
+    function handlePayClick(event) {
+      openPayment();
+      if (event?.currentTarget?.id === "lockedCriteriaBtn") {
+        alert("추천 기준 상세는 결제 후에 열려요.");
+        return;
+      }
+      void requestPaymentCheckout();
+    }
+
+    function revealOnScroll() {
+      const els = document.querySelectorAll(".reveal");
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("show");
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      els.forEach((el) => io.observe(el));
+    }
+
+    previewBtn.addEventListener("click", () => {
+      const birthDate = document.getElementById("birthDate").value;
+      const birthTimeValue = birthTime.value;
+
+      if (!birthDate) {
+        alert("생년월일을 입력해 주세요.");
+        return;
+      }
+      if (!timeUnknown.checked && !birthTimeValue) {
+        alert("출생 시간을 입력하거나 시간 미상을 체크해 주세요.");
+        return;
+      }
+
+      previewBtn.disabled = true;
+      previewBtn.textContent = "추천 날짜 찾는 중...";
+
+      setTimeout(() => {
+        const result = makePreview(birthDate, birthTimeValue, timeUnknown.checked);
+        if (!result.ok) {
+          alert(result.message);
+          previewBtn.disabled = false;
+          previewBtn.textContent = "추천 날짜 다시 보기";
+          return;
+        }
+        showPreview();
+        previewBtn.disabled = false;
+        previewBtn.textContent = "추천 날짜 다시 보기";
+      }, 900);
+    });
+
+    timeUnknown.addEventListener("change", (e) => {
+      birthTime.disabled = e.target.checked;
+    });
+
+    [payBtn, stickyPayBtn, unlockTopBtn, lockedCriteriaBtn].forEach((btn) => {
+      btn.addEventListener("click", handlePayClick);
+    });
+
+    setCurrentMonthContext();
+    revealOnScroll();
+  </script>
+</body>
+</html>

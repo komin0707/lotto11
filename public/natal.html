@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>복권운 참고용 원국 분석</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap");
+
+    :root {
+      --bg: #edf7f6;
+      --panel: #ffffff;
+      --ink: #1b2730;
+      --ink-soft: #53656d;
+      --line: #cbe3de;
+      --accent: #2f8f7a;
+      --accent-2: #57b49f;
+      --good: #1f8a74;
+      --shadow: 0 14px 28px rgba(27, 39, 48, 0.09);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Gowun Dodum", "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 500px at 0% 0%, #e4f7f3 0%, transparent 55%),
+        radial-gradient(800px 460px at 100% -10%, #ffeede 0%, transparent 55%),
+        var(--bg);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(980px, 92vw);
+      margin: 0 auto;
+      padding: 24px 0 56px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: "Jua", "Gowun Dodum", sans-serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+    }
+
+    .logo img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .back {
+      color: var(--ink-soft);
+      text-decoration: none;
+      font-size: 0.9rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 12px;
+      background: #fff;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    h1, h2, h3 { margin: 0; letter-spacing: -0.02em; }
+    h1 {
+      font-family: "Jua", "Gowun Dodum", sans-serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 400;
+    }
+    h2 {
+      font-family: "Jua", "Gowun Dodum", sans-serif;
+      font-size: 1.06rem;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+
+    .desc { margin: 8px 0 0; color: var(--ink-soft); font-size: 0.92rem; line-height: 1.5; }
+
+    .grid {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    label { display: block; font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 6px; }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px;
+      font-size: 0.92rem;
+      font-family: inherit;
+    }
+
+    input:focus {
+      outline: 2px solid rgba(47, 143, 122, 0.2);
+      border-color: #81cdbf;
+    }
+
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 28px;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+    }
+
+    .check input { width: auto; margin: 0; accent-color: var(--accent); }
+
+    .btn {
+      margin-top: 12px;
+      border: 0;
+      border-radius: 11px;
+      padding: 10px 14px;
+      font-size: 0.92rem;
+      font-family: "Jua", "Gowun Dodum", sans-serif;
+      font-weight: 400;
+      cursor: pointer;
+      background: linear-gradient(180deg, var(--accent-2), var(--accent));
+      color: #fff;
+      box-shadow: 0 10px 18px rgba(47, 143, 122, 0.25);
+    }
+
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .pillar {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .p-title { color: var(--ink-soft); font-size: 0.82rem; }
+    .p-main { font-size: 1.15rem; font-weight: 800; margin-top: 4px; }
+    .p-sub { color: var(--ink-soft); font-size: 0.82rem; margin-top: 4px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 8px 6px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .chip {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.84rem;
+    }
+
+    .term-list { display: grid; gap: 8px; margin-top: 10px; }
+    .term-item {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .term-item strong { font-size: 0.92rem; }
+    .term-item p {
+      margin: 6px 0 0;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .muted { color: var(--ink-soft); font-size: 0.9rem; }
+
+    .credit {
+      text-align: center;
+      font-size: 0.74rem;
+      color: #7b8b91;
+      margin: 2px 0 0;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      .check { margin-top: 0; }
+      .pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="top">
+      <div class="logo"><img src="assets/clover.svg" alt="" />복권운 참고 분석기</div>
+      <a class="back" href="index.html">랜딩으로 돌아가기</a>
+    </div>
+
+    <section class="card">
+      <h1>복권운 참고용 기본 사주 보기</h1>
+      <p class="desc">일주·월주 중심으로 내 흐름을 가볍게 확인하고, 십성/신살/오행 정보를 한 번에 봅니다.</p>
+
+      <div class="grid">
+        <div>
+          <label for="birthDate">생년월일</label>
+          <input id="birthDate" type="date" />
+        </div>
+        <div>
+          <label for="birthTime">출생 시간</label>
+          <input id="birthTime" type="time" value="12:00" />
+        </div>
+        <div class="check">
+          <input id="timeUnknown" type="checkbox" />
+          <label for="timeUnknown">시간 미상(시주 제외)</label>
+        </div>
+      </div>
+
+      <button class="btn" id="runBtn">기본 흐름 분석하기</button>
+      <p class="muted">절기/신살은 간이 규칙입니다. 일주 보정값은 2일 고정으로 적용됩니다.</p>
+    </section>
+
+    <section class="card">
+      <h2>1) 사주 원국</h2>
+      <div id="summary" class="muted">분석 전</div>
+      <div id="pillars" class="pillars" style="margin-top:10px"></div>
+      <div id="coreRead" class="muted" style="margin-top:10px"></div>
+    </section>
+
+    <section class="card">
+      <h2>2) 십성 분포 (편재/상관 등)</h2>
+      <div id="tenGods"></div>
+      <div id="tenGodExplain" class="term-list"></div>
+    </section>
+
+    <section class="card">
+      <h2>3) 주요 신살</h2>
+      <div id="sals" class="chips"></div>
+      <p class="muted" style="margin-top:8px">기준: 도화, 역마, 화개, 천을귀인</p>
+      <div id="salsExplain" class="term-list"></div>
+    </section>
+
+    <section class="card">
+      <h2>4) 오행 균형 분석 (목·화·토·금·수)</h2>
+      <div id="elements" class="chips"></div>
+      <div id="elementRead" class="muted" style="margin-top:8px">분석 전</div>
+      <div id="elementsExplain" class="term-list"></div>
+    </section>
+    <div class="credit">Cute icons by OpenMoji (CC BY-SA 4.0)</div>
+  </main>
+
+  <script src="term-dictionary.js"></script>
+  <script>
+    const stems = [
+      { ch: "갑", han: "甲", element: "목", yinYang: "양" },
+      { ch: "을", han: "乙", element: "목", yinYang: "음" },
+      { ch: "병", han: "丙", element: "화", yinYang: "양" },
+      { ch: "정", han: "丁", element: "화", yinYang: "음" },
+      { ch: "무", han: "戊", element: "토", yinYang: "양" },
+      { ch: "기", han: "己", element: "토", yinYang: "음" },
+      { ch: "경", han: "庚", element: "금", yinYang: "양" },
+      { ch: "신", han: "辛", element: "금", yinYang: "음" },
+      { ch: "임", han: "壬", element: "수", yinYang: "양" },
+      { ch: "계", han: "癸", element: "수", yinYang: "음" }
+    ];
+
+    const branches = [
+      { ch: "자", han: "子", element: "수", hidden: [9] },
+      { ch: "축", han: "丑", element: "토", hidden: [5, 9, 7] },
+      { ch: "인", han: "寅", element: "목", hidden: [0, 2, 4] },
+      { ch: "묘", han: "卯", element: "목", hidden: [1] },
+      { ch: "진", han: "辰", element: "토", hidden: [4, 1, 9] },
+      { ch: "사", han: "巳", element: "화", hidden: [2, 6, 4] },
+      { ch: "오", han: "午", element: "화", hidden: [3, 5] },
+      { ch: "미", han: "未", element: "토", hidden: [5, 3, 1] },
+      { ch: "신", han: "申", element: "금", hidden: [6, 8, 4] },
+      { ch: "유", han: "酉", element: "금", hidden: [7] },
+      { ch: "술", han: "戌", element: "토", hidden: [4, 7, 3] },
+      { ch: "해", han: "亥", element: "수", hidden: [8, 0] }
+    ];
+
+    const controls = { 목: "토", 화: "금", 토: "수", 금: "목", 수: "화" };
+    const generates = { 목: "화", 화: "토", 토: "금", 금: "수", 수: "목" };
+    const DAY_OFFSET = 2;
+
+    function mod(n, m) { return ((n % m) + m) % m; }
+
+    function parseBirthDate(dateRaw, timeRaw, timeUnknown) {
+      if (!dateRaw) return null;
+      const safeTime = timeUnknown ? "12:00" : (timeRaw || "12:00");
+      const d = new Date(`${dateRaw}T${safeTime}:00`);
+      if (Number.isNaN(d.getTime())) return null;
+      return d;
+    }
+
+    function toNoonDate(date) {
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0, 0);
+    }
+
+    function diffDays(a, b) {
+      const ms = 24 * 60 * 60 * 1000;
+      return Math.round((toNoonDate(a) - toNoonDate(b)) / ms);
+    }
+
+    function getYearPillar(date) {
+      const y = date.getFullYear();
+      const lichun = new Date(y, 1, 4, 0, 0, 0, 0);
+      const yearForGanzhi = date >= lichun ? y : y - 1;
+      const idx = mod(yearForGanzhi - 1984, 60);
+      return { stem: mod(idx, 10), branch: mod(idx, 12) };
+    }
+
+    function getMonthBranchIndex(date) {
+      const y = date.getFullYear();
+      const marks = [
+        { dt: new Date(y, 0, 6), branch: 1 },
+        { dt: new Date(y, 1, 4), branch: 2 },
+        { dt: new Date(y, 2, 6), branch: 3 },
+        { dt: new Date(y, 3, 5), branch: 4 },
+        { dt: new Date(y, 4, 6), branch: 5 },
+        { dt: new Date(y, 5, 6), branch: 6 },
+        { dt: new Date(y, 6, 7), branch: 7 },
+        { dt: new Date(y, 7, 8), branch: 8 },
+        { dt: new Date(y, 8, 8), branch: 9 },
+        { dt: new Date(y, 9, 9), branch: 10 },
+        { dt: new Date(y, 10, 8), branch: 11 },
+        { dt: new Date(y, 11, 7), branch: 0 }
+      ];
+      let chosen = 1;
+      for (const m of marks) {
+        if (date >= m.dt) chosen = m.branch;
+      }
+      if (date < marks[0].dt) chosen = 0;
+      return chosen;
+    }
+
+    function getMonthPillar(date) {
+      const year = getYearPillar(date);
+      const monthBranch = getMonthBranchIndex(date);
+      const monthOrder = mod(monthBranch - 2, 12);
+      const firstStemByYearStem = {
+        0: 2, 5: 2, 1: 4, 6: 4, 2: 6, 7: 6, 3: 8, 8: 8, 4: 0, 9: 0
+      };
+      const firstStem = firstStemByYearStem[year.stem];
+      const monthStem = mod(firstStem + monthOrder, 10);
+      return { stem: monthStem, branch: monthBranch };
+    }
+
+    function getDayPillar(date, dayOffset = 0) {
+      const ref = new Date(1984, 1, 2, 12, 0, 0, 0);
+      const dayCount = diffDays(date, ref) + dayOffset;
+      const idx = mod(dayCount, 60);
+      return { stem: mod(idx, 10), branch: mod(idx, 12) };
+    }
+
+    function getHourBranch(hour) {
+      return mod(Math.floor((hour + 1) / 2), 12);
+    }
+
+    function getHourPillar(date, dayStem) {
+      const hourBranch = getHourBranch(date.getHours());
+      const firstStemByDayStem = {
+        0: 0, 5: 0, 1: 2, 6: 2, 2: 4, 7: 4, 3: 6, 8: 6, 4: 8, 9: 8
+      };
+      const stem = mod(firstStemByDayStem[dayStem] + hourBranch, 10);
+      return { stem, branch: hourBranch };
+    }
+
+    function relationToDayMaster(dayStem, targetStem) {
+      const dm = stems[dayStem];
+      const tg = stems[targetStem];
+      if (dm.element === tg.element) return dm.yinYang === tg.yinYang ? "비견" : "겁재";
+      if (generates[dm.element] === tg.element) return dm.yinYang === tg.yinYang ? "식신" : "상관";
+      if (controls[dm.element] === tg.element) return dm.yinYang === tg.yinYang ? "편재" : "정재";
+      if (controls[tg.element] === dm.element) return dm.yinYang === tg.yinYang ? "편관" : "정관";
+      return dm.yinYang === tg.yinYang ? "편인" : "정인";
+    }
+
+    function buildNatal(date, includeHour, dayOffset) {
+      const year = getYearPillar(date);
+      const month = getMonthPillar(date);
+      const day = getDayPillar(date, dayOffset);
+      const hour = includeHour ? getHourPillar(date, day.stem) : null;
+      return { year, month, day, hour };
+    }
+
+    function formatPillar(p) {
+      return `${stems[p.stem].ch}${branches[p.branch].ch}`;
+    }
+
+    function tenGodsTable(natal) {
+      const dm = natal.day.stem;
+      const rows = [
+        { key: "년간", stem: natal.year.stem },
+        { key: "월간", stem: natal.month.stem },
+        { key: "일간", stem: natal.day.stem },
+        ...(natal.hour ? [{ key: "시간", stem: natal.hour.stem }] : [])
+      ];
+
+      const counts = {};
+      rows.forEach((r) => {
+        const tg = relationToDayMaster(dm, r.stem);
+        r.tenGod = tg;
+        counts[tg] = (counts[tg] || 0) + 1;
+      });
+
+      const hiddenStems = [
+        ...branches[natal.year.branch].hidden,
+        ...branches[natal.month.branch].hidden,
+        ...branches[natal.day.branch].hidden,
+        ...(natal.hour ? branches[natal.hour.branch].hidden : [])
+      ];
+
+      hiddenStems.forEach((s) => {
+        const tg = relationToDayMaster(dm, s);
+        counts[tg] = (counts[tg] || 0) + 1;
+      });
+
+      return { rows, counts };
+    }
+
+    function branchGroup(branchIndex) {
+      if ([8, 0, 4].includes(branchIndex)) return "申子辰";
+      if ([2, 6, 10].includes(branchIndex)) return "寅午戌";
+      if ([11, 3, 7].includes(branchIndex)) return "亥卯未";
+      return "巳酉丑";
+    }
+
+    function getGroupTarget(group, kind) {
+      const map = {
+        "도화": { "申子辰": 9, "寅午戌": 3, "亥卯未": 0, "巳酉丑": 6 },
+        "역마": { "申子辰": 2, "寅午戌": 8, "亥卯未": 5, "巳酉丑": 11 },
+        "화개": { "申子辰": 4, "寅午戌": 10, "亥卯未": 7, "巳酉丑": 1 }
+      };
+      return map[kind][group];
+    }
+
+    function noblemanTargets(dayStem) {
+      const map = {
+        0: [1, 7], 4: [1, 7], 6: [1, 7],
+        1: [0, 8], 5: [0, 8],
+        2: [11, 9], 3: [11, 9],
+        8: [3, 5], 9: [3, 5],
+        7: [2, 6]
+      };
+      return map[dayStem] || [];
+    }
+
+    function detectSals(natal) {
+      const base = natal.day.branch;
+      const group = branchGroup(base);
+      const targetDoHwa = getGroupTarget(group, "도화");
+      const targetYeokMa = getGroupTarget(group, "역마");
+      const targetHwaGae = getGroupTarget(group, "화개");
+      const nobleTargets = noblemanTargets(natal.day.stem);
+
+      const allBranches = [natal.year.branch, natal.month.branch, natal.day.branch, ...(natal.hour ? [natal.hour.branch] : [])];
+      const found = [];
+
+      if (allBranches.includes(targetDoHwa)) found.push(`도화살(${branches[targetDoHwa].ch})`);
+      if (allBranches.includes(targetYeokMa)) found.push(`역마살(${branches[targetYeokMa].ch})`);
+      if (allBranches.includes(targetHwaGae)) found.push(`화개살(${branches[targetHwaGae].ch})`);
+      nobleTargets.forEach((b) => {
+        if (allBranches.includes(b)) found.push(`천을귀인(${branches[b].ch})`);
+      });
+
+      return [...new Set(found)];
+    }
+
+    function renderPillars(natal) {
+      const items = [
+        { name: "년주", p: natal.year },
+        { name: "월주", p: natal.month },
+        { name: "일주", p: natal.day },
+        { name: "시주", p: natal.hour }
+      ];
+      return items.map((it) => `
+        <div class="pillar">
+          <div class="p-title">${it.name}</div>
+          <div class="p-main">${it.p ? formatPillar(it.p) : "미상"}</div>
+          <div class="p-sub">${it.p ? `${stems[it.p.stem].han}${branches[it.p.branch].han}` : "-"}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderTenGods(data) {
+      const rowHtml = data.rows.map((r) => `
+        <tr>
+          <td>${r.key}</td>
+          <td>${stems[r.stem].ch}</td>
+          <td>${r.tenGod}</td>
+        </tr>
+      `).join("");
+
+      const tags = Object.entries(data.counts)
+        .sort((a, b) => b[1] - a[1])
+        .map(([k, v]) => `<span class="chip">${k} ${v}</span>`)
+        .join("");
+
+      return `
+        <table>
+          <thead><tr><th>기준</th><th>천간</th><th>십성</th></tr></thead>
+          <tbody>${rowHtml}</tbody>
+        </table>
+        <div class="chips" style="margin-top:10px">${tags}</div>
+      `;
+    }
+
+    function monthSupportText(dayStem, monthBranch) {
+      const dm = stems[dayStem].element;
+      const me = branches[monthBranch].element;
+      if (dm === me) return "월지 오행이 일간과 동행해 기본 기운이 안정적입니다.";
+      if (generates[me] === dm) return "월지 오행이 일간을 생해 도움을 주는 흐름입니다.";
+      if (controls[me] === dm) return "월지 오행이 일간을 제어하는 구간이라 균형 관리가 중요합니다.";
+      return "월지와 일간의 상호작용이 중립에 가까운 편입니다.";
+    }
+
+    function calcElementBalance(natal) {
+      const counts = { 목: 0, 화: 0, 토: 0, 금: 0, 수: 0 };
+      const pillars = [natal.year, natal.month, natal.day, ...(natal.hour ? [natal.hour] : [])];
+
+      pillars.forEach((p) => {
+        counts[stems[p.stem].element] += 1;
+        counts[branches[p.branch].element] += 1;
+        branches[p.branch].hidden.forEach((hs) => {
+          counts[stems[hs].element] += 0.5;
+        });
+      });
+
+      const values = Object.values(counts);
+      const avg = values.reduce((a, b) => a + b, 0) / 5;
+      const low = avg * 0.7;
+      const high = avg * 1.3;
+
+      const lacking = Object.entries(counts)
+        .filter(([, v]) => v < low)
+        .map(([k]) => k);
+      const excessive = Object.entries(counts)
+        .filter(([, v]) => v > high)
+        .map(([k]) => k);
+
+      return { counts, lacking, excessive };
+    }
+
+    function run() {
+      const dateRaw = document.getElementById("birthDate").value;
+      const timeRaw = document.getElementById("birthTime").value;
+      const timeUnknown = document.getElementById("timeUnknown").checked;
+      const dayOffset = DAY_OFFSET;
+
+      const birthDate = parseBirthDate(dateRaw, timeRaw, timeUnknown);
+      if (!birthDate) {
+        alert("생년월일을 확인하세요.");
+        return;
+      }
+
+      const natal = buildNatal(birthDate, !timeUnknown, dayOffset);
+      const dm = stems[natal.day.stem];
+
+      document.getElementById("summary").textContent =
+        `일간: ${dm.ch}(${dm.han}, ${dm.yinYang}${dm.element}) | 월주: ${formatPillar(natal.month)} | 일주보정(고정): ${dayOffset}일`;
+
+      document.getElementById("pillars").innerHTML = renderPillars(natal);
+
+      const tenGods = tenGodsTable(natal);
+      document.getElementById("tenGods").innerHTML = renderTenGods(tenGods);
+      const tenTerms = Object.entries(tenGods.counts)
+        .sort((a, b) => b[1] - a[1])
+        .map(([k]) => k);
+      document.getElementById("tenGodExplain").innerHTML = tenTerms.length
+        ? tenTerms
+            .filter((t) => TERM_DICTIONARY.tenGods[t])
+            .map((t) => `<div class="term-item"><strong>${t}</strong><p>${TERM_DICTIONARY.tenGods[t]}</p></div>`)
+            .join("")
+        : '<div class="muted">표시할 십성 설명이 없습니다.</div>';
+
+      const topTenGod = Object.entries(tenGods.counts).sort((a, b) => b[1] - a[1])[0];
+      const coreRead = [
+        `일주 해석: ${formatPillar(natal.day)}는 ${dm.yinYang}${dm.element} 일간 기준으로 자기표현/관계 방식의 중심축이 됩니다.`,
+        `월주 해석: ${formatPillar(natal.month)}. ${monthSupportText(natal.day.stem, natal.month.branch)}`,
+        topTenGod ? `십성 경향: ${topTenGod[0]} 비중이 상대적으로 높습니다.` : ""
+      ].filter(Boolean).join(" ");
+      document.getElementById("coreRead").textContent = coreRead;
+
+      const sals = detectSals(natal);
+      document.getElementById("sals").innerHTML = sals.length
+        ? sals.map((s) => `<span class="chip">${s}</span>`).join("")
+        : '<span class="muted">확인된 주요 신살 없음</span>';
+      const salTerms = [...new Set(sals.map((s) => s.replace(/\(.+?\)/g, "")))];
+      document.getElementById("salsExplain").innerHTML = salTerms.length
+        ? salTerms
+            .filter((s) => TERM_DICTIONARY.sals[s])
+            .map((s) => `<div class="term-item"><strong>${s}</strong><p>${TERM_DICTIONARY.sals[s]}</p></div>`)
+            .join("")
+        : '<div class="muted">표시할 신살 설명이 없습니다.</div>';
+
+      const e = calcElementBalance(natal);
+      document.getElementById("elements").innerHTML = Object.entries(e.counts)
+        .map(([k, v]) => `<span class="chip">${k} ${v.toFixed(1)}</span>`)
+        .join("");
+      const lackText = e.lacking.length ? `부족: ${e.lacking.join(", ")}` : "부족 오행 없음";
+      const excessText = e.excessive.length ? `과다: ${e.excessive.join(", ")}` : "과다 오행 없음";
+      document.getElementById("elementRead").textContent = `${lackText} | ${excessText}`;
+      const elementTerms = [...e.lacking.map((el) => `${el}부족`), ...e.excessive.map((el) => `${el}과다`)];
+      document.getElementById("elementsExplain").innerHTML = elementTerms.length
+        ? elementTerms
+            .filter((k) => TERM_DICTIONARY.elements[k])
+            .map((k) => `<div class="term-item"><strong>${k}</strong><p>${TERM_DICTIONARY.elements[k]}</p></div>`)
+            .join("")
+        : '<div class="muted">오행 과다/부족 설명 항목이 없습니다.</div>';
+    }
+
+    document.getElementById("runBtn").addEventListener("click", run);
+    document.getElementById("timeUnknown").addEventListener("change", (e) => {
+      document.getElementById("birthTime").disabled = e.target.checked;
+    });
+  </script>
+</body>
+</html>

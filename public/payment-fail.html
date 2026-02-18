@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>결제 실패 | 복권운 월간 리포트</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #fff7f4;
+      --card: #ffffff;
+      --ink: #2d2b2b;
+      --sub: #6f6764;
+      --line: #edd8d1;
+      --danger: #bf5d46;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      font-family: "Gowun Dodum", sans-serif;
+      background: linear-gradient(180deg, #fffdfc, var(--bg));
+      color: var(--ink);
+    }
+    .card {
+      width: min(520px, 100%);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 14px 28px rgba(97, 56, 44, 0.08);
+      padding: 20px;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+    }
+    p { margin: 0 0 8px; color: var(--sub); }
+    .error {
+      border: 1px dashed #e7c2b6;
+      border-radius: 12px;
+      background: #fff7f3;
+      padding: 11px;
+      margin: 12px 0 14px;
+      color: var(--danger);
+      line-height: 1.45;
+      font-size: 0.92rem;
+      word-break: break-word;
+    }
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    a {
+      border-radius: 10px;
+      padding: 11px 12px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .primary {
+      background: linear-gradient(180deg, #3ea48e, #2f8f7a);
+      color: #fff;
+    }
+    .secondary {
+      border: 1px solid var(--line);
+      color: var(--ink);
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>결제가 완료되지 않았어요</h1>
+    <p>아래 메시지를 확인한 뒤 다시 시도해 주세요.</p>
+    <div class="error" id="errorText">에러 정보를 불러오는 중...</div>
+    <div class="actions">
+      <a class="secondary" href="index.html#paymentBox">다시 결제하기</a>
+      <a class="primary" href="index.html">메인으로 이동</a>
+    </div>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    const message = params.get("message");
+    const display = [
+      code ? `코드: ${code}` : "",
+      message ? `사유: ${message}` : "사유: 사용자 취소 또는 결제창 종료"
+    ].filter(Boolean).join("\n");
+    document.getElementById("errorText").textContent = display;
+  </script>
+</body>
+</html>
